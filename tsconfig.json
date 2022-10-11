@@ -1,0 +1,34 @@
+{
+	"compilerOptions": {
+		"target": "es2015",
+		"lib": ["es2015", "dom", "ES2020"],
+		"module": "commonjs",
+		"experimentalDecorators": true,
+
+    // macos
+		// "outDir": "../../MetahorizonLab/meow-whisper/meow-whisper-web-client/node_modules/@nyanyajs/utils/dist",
+		// windows11
+    "outDir": "./dist",
+    // "outDir": "../../cherrai/saki-sso/saki-sso-client/node_modules/@nyanyajs/utils/dist",
+    // "outDir": "../../cherrai/saki-sso/saki-sso-server/node_modules/@nyanyajs/utils/dist",
+    // "outDir": "../../saki-ui/saki-ui/node_modules/@nyanyajs/utils/dist",
+
+    // "outDir": "../../MetahorizonLab/saki-ui/node_modules/@nyanyajs/utils/dist",
+		// "outDir": "../../MetahorizonLab/saki-sso/saki-sso-client/node_modules/@nyanyajs/utils/dist",
+		// "outDir": "../../MetahorizonLab/saki-sso/saki-sso-server/node_modules/@nyanyajs/utils/dist",
+		// "outDir": "./examples/react/node_modules/@nyanyajs/nyanyadb",
+		// "outDir": "./examples/demo/src/nyanyadb",
+		// "outFile": "./examples/demo/src/nyanyadb.js",
+		// "outDir": "./dist",
+		"rootDir": "./",
+		"allowJs": false,
+		// 不允许隐式的 any 类型
+		"removeComments": true,
+		"moduleResolution": "node",
+		"types": [],
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"watch": true
+	},
+}

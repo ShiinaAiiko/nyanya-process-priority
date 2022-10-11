@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configure - NyaNay Process Priority</title>
+  <script nomodule="" src="./saki-ui/saki-ui.js" data-rh="true"></script>
+  <script type="module" src="./saki-ui/saki-ui.esm.js" data-rh="true"></script>
+  <link rel="stylesheet" href="./index.css">
+</head>
+
+<body>
+  <div class="main">
+    <div class="m-item">
+      <saki-input class="process" height="50px" type="Text" placeholder="Process name" placeholder-animation="MoveUp">
+      </saki-input>
+      <div class="m-input-tip">
+        aaa.exe/ccc.exe/zzz.exe
+      </div>
+    </div>
+    <div class="m-item">
+      <saki-input class="priority" value="128" height="50px" type="Number" placeholder="Set priority"
+        placeholder-animation="MoveUp"></saki-input>
+      <div class="m-input-tip">
+        Realtime-256, High-128, AboveNormal-32, Normal-16384, BelowNormal-16384, Low-64
+      </div>
+    </div>
+    <div class="m-item">
+      <saki-input class="interval" value="10000" height="50px" type="Number" placeholder="Running interval (ms)"
+        placeholder-animation="MoveUp"></saki-input>
+    </div>
+    <div class="m-buttons">
+      <saki-button class="save" type="Primary">Save</saki-button>
+    </div>
+  </div>
+</body>
+
+</html>
+
+<script>
+  let electron = window.require("electron")
+  let processName = ""
+  let priority = 128
+  let interval = 10000
+  const processInput = document.querySelector(".process")
+  processInput.addEventListener("changevalue", e => {
+    console.log(e)
+    processName = e.detail
+  })
+  const priorityInput = document.querySelector(".priority")
+  priorityInput.addEventListener("changevalue", e => {
+    console.log(e)
+    priority = e.detail
+  })
+  const intervalInput = document.querySelector(".interval")
+  intervalInput.addEventListener("changevalue", e => {
+    console.log(e)
+    interval = e.detail
+  })
+  const saveBtn = document.querySelector(".save")
+  saveBtn.addEventListener("tap", e => {
+    if (!processName) {
+      processInput.setAttribute("error", "Process name cannot be blank.")
+      return
+    }
+    if (interval < 1000) {
+      intervalInput.setAttribute("error", "The interval cannot be less than 1000ms.")
+      return
+    }
+    console.log(processName, priority, interval)
+    console.log(electron)
+    electron.ipcRenderer.send('saveData', {
+      processName,
+      priority,
+      interval
+    })
+
+
+    let el = document.createElement('saki-snackbar')
+    // console.log('state.app.status', el)
+    // console.log(el)
+    el.message = "Saved successfully"
+    el.vertical = "top"
+    el.horizontal = "center"
+    el.autoHideDuration = 2000
+    el.backgroundColor = 'rgb(242, 156, 178)'
+    el.color = '#fff'
+    el.addEventListener('load', () => {
+      el.open()
+    })
+    el.addEventListener('close', () => {
+      document.body.contains(el) && document.body.removeChild(el)
+      el = null
+    })
+    document.body.appendChild(el)
+  })
+
+
+  electron.ipcRenderer.send('getData', {
+    processName,
+    priority,
+    interval
+  })
+
+  electron.ipcRenderer.on('getData', (
+    event,
+    data
+  ) => {
+    console.log(data)
+    if (data.processName) {
+      processName = data.processName
+      priority = data.priority
+      interval = data.interval
+      processInput.setAttribute("value", data.processName)
+      priorityInput.setAttribute("value", data.priority)
+      intervalInput.setAttribute("value", data.interval)
+    }
+  })
+</script>
