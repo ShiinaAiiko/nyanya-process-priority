@@ -9,8 +9,8 @@
 	"scripts": {
 		"el:dev": "nodemon --exec electron ./dist/main.js",
 		"el:tsc": "rm -rf ./dist/ && tsc",
-		"el:build-linux": "electron-builder --linux --x64",
-		"el:build-win": "electron-builder --win --x64",
+		"el:build-linux-x64": "electron-builder --linux --x64",
+		"el:build-win-x64": "electron-builder --win --x64",
 		"el:icon": "electron-icon-builder --input=./public/logo.png --output=./public --flatten"
 	},
 	"build": {

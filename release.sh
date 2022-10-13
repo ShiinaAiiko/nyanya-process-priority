@@ -1,5 +1,5 @@
 #! /bin/bash
-name="meow-sticky-note-client"
+name="nyanya-process-priority"
 port=16111
 DIR=$(cd $(dirname $0) && pwd)
 version="1.0.1"
@@ -21,7 +21,11 @@ build() {
   yarn el:icon
   rm -rf ./el-build/linux-unpacked
   rm -rf ./el-build/*.AppImage
-  yarn el:build-win
+
+  yarn el:build-win-x64
+  mv "./el-build/Nyanya Process Priority Setup "$version".exe" \
+  ./el-build/$name-setup-v$version-x64.exe
+
   # rm -rf ./build
   # sudo apt install -y ./el-build/meow-sticky-note_1.0.1_amd64.deb
   # AppImage deb
