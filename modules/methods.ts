@@ -16,7 +16,6 @@ import * as nyanyalog from 'nyanyajs-log'
 import {
 	logo,
 	systemConfig,
-	notes,
 	processName,
 	priority,
 	interval,

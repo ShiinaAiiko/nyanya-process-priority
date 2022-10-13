@@ -13,10 +13,7 @@ import path from 'path'
 import isDev from 'electron-is-dev'
 
 import { Route } from './typings/api'
-import {
-	taskIcon,
-	systemConfig,
-} from './config'
+import { taskIcon, systemConfig } from './config'
 
 export const windows = new Map<Route, BrowserWindow>()
 
@@ -30,9 +27,6 @@ export const createWindow = async (
 ) => {
 	let x = await systemConfig.get(route + 'x')
 	let y = await systemConfig.get(route + 'y')
-	console.log('systemConfig', await systemConfig.get(route + 'x'))
-	console.log('systemConfig', await systemConfig.get(route + 'y'))
-
 	const window = new BrowserWindow({
 		...options,
 		webPreferences: {
@@ -56,18 +50,6 @@ export const createWindow = async (
 	} else {
 		window.hide()
 	}
-	const queryStr = '?route=' + route + '&time=' + new Date().getTime()
-	let dev = isDev
-	// dev = false
-	// window.loadURL('http://localhost:16111' + route + queryStr)
-	// window.loadURL(
-	// 	dev
-	// 		? 'http://localhost:16111' + route + queryStr
-	// 		: `file://${path.join(__dirname, '../build/index.html')}` + queryStr,
-	// 	{ extraHeaders: 'pragma: no-cache' }
-	// )
-	// console.log(`file://${path.join(__dirname, '../../../build/index.html')}`)
-
 	window.loadURL(`file://${path.join(__dirname, '../public/index.html')}`, {
 		extraHeaders: 'pragma: no-cache',
 	})
@@ -121,7 +103,7 @@ export const openMainWindows = async () => {
 		return window
 	}
 	return await createWindow('/', {
-		title: 'Meow Sticky Note',
+		title: 'Nyanya Progress Priority',
 		width: 450,
 		height: 450,
 		// x: 0,
@@ -129,12 +111,12 @@ export const openMainWindows = async () => {
 		skipTaskbar: false,
 		hasShadow: true,
 		alwaysOnTop: false,
-		fullscreen: false, 
+		fullscreen: false,
 		// center: true,
 		// 可以隐藏窗口
-    frame: true,
-    useContentSize: false,
-    resizable:false,
+		frame: true,
+		useContentSize: false,
+		resizable: false,
 		// backgroundColor: 'rgba(0,0,0,0.3)',
 
 		webPreferences: {

@@ -1,4 +1,4 @@
-export type Route = '/' | '/quickreview'
+export type Route = '/'
 
 export interface APIParams {
 	eventName: string

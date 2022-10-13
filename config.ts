@@ -78,14 +78,6 @@ let staticPath = isDev ? '../public' : '../public'
 export const taskIcon = path.join(path.join(__dirname, staticPath), 'logo.png')
 
 export const logo = path.join(path.join(__dirname, staticPath), 'logo.png')
-// export const taskIcon = path.join(
-// 	path.join(__dirname, staticPath),
-// 	'logo-neko.png'
-// )
-// export const taskIcon2 = path.join(
-// 	path.join(__dirname, staticPath),
-// 	'logo-neko2.png'
-// )
 
 let labelPrefix = isDev ? 'dev_' : ''
 
@@ -97,14 +89,6 @@ export const systemConfig = new NodeFsStorage<any>({
 	// 	key: 'nyanya-progress-priority',
 	// },
 })
-export const notes = new NodeFsStorage<any>({
-	label: labelPrefix + 'notes',
-	cacheRootDir: cacheRootDir + '/nyanya-progress-priority/u',
-})
-export const global = new NodeFsStorage<any>({
-	label: labelPrefix + 'global',
-	cacheRootDir: cacheRootDir + '/nyanya-progress-priority/u',
-})
 export const initConfig = async () => {
 	NodeFsStorage.baseRootDir = cacheRootDir + "'/nyanya-progress-priority/u'"
 
@@ -115,17 +99,6 @@ export const initConfig = async () => {
 	await systemConfig.getAndSet('mode', (v) => {
 		return v ? v : 'system'
 	})
-	// const userConfig = new NodeFsStorage<string, any>({
-	// 	baseLabel: 'userConfig',
-	// 	cacheRootDir: configRootDir + '/nyanya-progress-priority/u',
-	// 	encryption: {
-	// 		enable: false,
-	// 		key: 'nyanya-progress-priority',
-	// 	},
-	// })
-	// console.log(userConfig)
-
-	// userConfig.set('language', 'zh-CN')
 
 	electronRouter(ipcMain)
 }

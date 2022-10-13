@@ -25,11 +25,6 @@ build() {
   yarn el:build-win-x64
   mv "./el-build/Nyanya Process Priority Setup "$version".exe" \
   ./el-build/$name-setup-v$version-x64.exe
-
-  # rm -rf ./build
-  # sudo apt install -y ./el-build/meow-sticky-note_1.0.1_amd64.deb
-  # AppImage deb
-  # run
 }
 
 saki-ui() {

@@ -63,21 +63,6 @@ const run = () => {
 		await createTaskMenu()
 
 		start()
-
-		// exec(cmd, (err, stdout, stderr) => {
-		// 	if (err) {
-		// 		console.log(err)
-		// 		return
-		// 	}
-		// 	console.log(`stdout: ${stdout}`)
-		// 	console.log(`stderr: ${stderr}`)
-		// })
-
-		// openMainWindows()
-		// await backup()
-		// setInterval(async () => {
-		// 	await backup()
-		// }, 3600 * 1000)
 	}
 
 	const isFirstInstance = app.requestSingleInstanceLock()
