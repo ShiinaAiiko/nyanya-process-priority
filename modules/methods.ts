@@ -23,131 +23,6 @@ import {
 	msg,
 	updateMsg,
 } from '../config'
-interface SaveAsOptions extends SaveDialogOptions {
-	path?: string
-}
-export const saveAs = async (
-	fileName: string,
-	data: string,
-	options?: SaveAsOptions
-) => {
-	const lastOpenFolderPath =
-		(await systemConfig.get('lastOpenFolderPath')) ||
-		process.env.HOME ||
-		process.env.USERPROFILE
-	const savePath = await dialog.showSaveDialog({
-		defaultPath: (options?.path || lastOpenFolderPath) + '/' + fileName,
-		...options,
-		properties: [
-			'showHiddenFiles',
-			'showOverwriteConfirmation',
-			'createDirectory',
-		],
-	})
-	if (!savePath.canceled && savePath?.filePath) {
-		await systemConfig.set(
-			'lastOpenFolderPath',
-			path.dirname(savePath.filePath)
-		)
-		// nyanyalog.info(savePath.canceled, savePath.filePath)
-		// nyanyalog.info(path.dirname(savePath.filePath))
-		fs.writeFileSync(savePath?.filePath, data)
-	}
-}
-
-interface OpenFolderOptions extends OpenDialogOptions {}
-export const openFolder = async (path: string, options?: OpenFolderOptions) => {
-	const lastOpenFolderPath =
-		path || (process.env.HOME || process.env.USERPROFILE) + '/meow-sticky-note'
-	const openPath = await dialog.showOpenDialog({
-		defaultPath: lastOpenFolderPath,
-		...options,
-		properties: ['showHiddenFiles', 'openDirectory', 'createDirectory'],
-	})
-	if (!openPath.canceled && openPath?.filePaths) {
-		return openPath?.filePaths?.[0]
-	}
-	return ''
-}
-
-export const backup = async (backupNow: boolean = false) => {
-	nyanyalog.info('backup')
-	clearBackup()
-	const backupAutomatically = JSON.parse(
-		(await systemConfig.get('backupAutomatically')) || 'false'
-	)
-	const automaticBackupFrequency = Number(
-		(await systemConfig.get('automaticBackupFrequency')) || 604800
-	)
-	const storagePath = await systemConfig.get('backupStoragePath')
-	let lastBackupTime = (await systemConfig.get('lastBackupTime')) || 0
-
-	// lastBackupTime = 0
-
-	nyanyalog.info(backupAutomatically, storagePath)
-	if (backupAutomatically && storagePath) {
-		nyanyalog.info('开始备份')
-		const timestamp = Math.floor(new Date().getTime() / 1000)
-
-		if (backupNow || timestamp > lastBackupTime + automaticBackupFrequency) {
-			const noteList = await notes.getAll()
-
-			nyanyalog.info(noteList.length)
-			nyanyalog.info('该备份了')
-
-			const backupPath =
-				storagePath + '/backup_' + moment().format('YYYY-MM-DD_hh:mm:ss')
-			mkdirsSync(backupPath)
-
-			noteList.forEach((v) => {
-				fs.writeFileSync(
-					backupPath + '/' + v.value.id + '.note',
-					JSON.stringify(v.value, null, 2)
-				)
-			})
-
-			await systemConfig.set('lastBackupTime', timestamp)
-		} else {
-			nyanyalog.info('还没到时间')
-		}
-	}
-}
-
-const clearBackup = async () => {
-	try {
-		// keepBackups
-		nyanyalog.info('-----clearBackup-----')
-		let keepBackups = Number(
-			(await systemConfig.get('keepBackups')) || 120 * 365 * 24 * 3600
-		)
-
-		const storagePath = await systemConfig.get('backupStoragePath')
-		// nyanyalog.info('keepBackups', storagePath, keepBackups)
-		const files = fs.readdirSync(storagePath)
-		// nyanyalog.info(files)
-		const timestamp = Math.floor(new Date().getTime() / 1000)
-
-		files.forEach((v) => {
-			if (v.indexOf('backup_') === 0) {
-				const createTime = Math.floor(
-					new Date(v.replace('backup_', '').replace('_', ' ')).getTime() / 1000
-				)
-				// nyanyalog.info(createTime)
-				const filePath = storagePath + '/' + v
-				// nyanyalog.info(filePath)
-
-				if (timestamp - createTime >= keepBackups) {
-					nyanyalog.info(filePath, ' => 该删除了')
-					removeDir(filePath)
-				} else {
-					// nyanyalog.info(filePath, ' => 不需要删除')
-				}
-			}
-		})
-	} catch (error) {
-		nyanyalog.error(error)
-	}
-}
 
 const mkdirsSync = (dirname: string) => {
 	if (fs.existsSync(dirname)) {
@@ -179,6 +54,7 @@ const removeDir = (dir: string) => {
 import { PowerShell } from 'node-powershell'
 import moment from 'moment'
 import { appTray, getMenu } from '../taskMenu'
+import { t } from './languages'
 
 let timer: NodeJS.Timer
 export let isStart = false
@@ -189,20 +65,22 @@ export const start = () => {
 	console.log('start', processName, priority, interval)
 	isStart = true
 	timer && clearInterval(timer)
-	updateMsg('activated')
+	updateMsg(t('activated'))
 	runTask()
 	timer = setInterval(async () => {
+		updateMsg(t('activated'))
 		runTask()
 	}, 10000)
 }
 
 export const end = () => {
 	isStart = false
-	updateMsg('closed')
+	updateMsg(t('closed'))
 	clearInterval(timer)
 }
 
 export const runTask = async () => {
+	console.log(2121)
 	processName.split('/').forEach(async (v) => {
 		if (path.extname(v) === '.exe') {
 			// console.log(v.trim())
@@ -216,6 +94,26 @@ export const runTask = async () => {
 	})
 
 	time++
-	lastTime = moment().format('YYYY-MM-DD h:mm:ss')
+	lastTime = moment().format('YYYY-MM-DD HH:mm:ss')
 	appTray.setContextMenu(getMenu())
+}
+
+export const filterPriorityText = (priority: number) => {
+	switch (priority) {
+		case 256:
+			return 'Realtime'
+		case 128:
+			return 'High'
+		case 32:
+			return 'AboveNormal'
+		case 16384:
+			return 'Normal'
+		case 16384:
+			return 'BelowNormal'
+		case 64:
+			return 'Low'
+
+		default:
+			break
+	}
 }

@@ -23,7 +23,7 @@
     <div class="m-item">
       <saki-input class="priority" value="128" height="50px" type="Number" placeholder="Set priority"
         placeholder-animation="MoveUp"></saki-input>
-      <div class="m-input-tip">
+      <div class="m-input-tip priority">
         Realtime-256, High-128, AboveNormal-32, Normal-16384, BelowNormal-16384, Low-64
       </div>
     </div>
@@ -41,36 +41,40 @@
 
 <script>
   let electron = window.require("electron")
+
+  let languages = "en-US"
+
   let processName = ""
   let priority = 128
   let interval = 10000
   const processInput = document.querySelector(".process")
   processInput.addEventListener("changevalue", e => {
-    console.log(e)
+    // console.log(e)
     processName = e.detail
   })
   const priorityInput = document.querySelector(".priority")
+  const priorityTipInput = document.querySelector(".m-input-tip.priority")
   priorityInput.addEventListener("changevalue", e => {
-    console.log(e)
+    // console.log(e)
     priority = e.detail
   })
   const intervalInput = document.querySelector(".interval")
   intervalInput.addEventListener("changevalue", e => {
-    console.log(e)
+    // console.log(e)
     interval = e.detail
   })
   const saveBtn = document.querySelector(".save")
   saveBtn.addEventListener("tap", e => {
     if (!processName) {
-      processInput.setAttribute("error", "Process name cannot be blank.")
+      processInput.setAttribute("error", t("processNameError"))
       return
     }
     if (interval < 1000) {
-      intervalInput.setAttribute("error", "The interval cannot be less than 1000ms.")
+      intervalInput.setAttribute("error", t("intervalError"))
       return
     }
-    console.log(processName, priority, interval)
-    console.log(electron)
+    // console.log(processName, priority, interval)
+    // console.log(electron)
     electron.ipcRenderer.send('saveData', {
       processName,
       priority,
@@ -81,7 +85,7 @@
     let el = document.createElement('saki-snackbar')
     // console.log('state.app.status', el)
     // console.log(el)
-    el.message = "Saved successfully"
+    el.message = t("savedSuccessfully")
     el.vertical = "top"
     el.horizontal = "center"
     el.autoHideDuration = 2000
@@ -118,4 +122,76 @@
       intervalInput.setAttribute("value", data.interval)
     }
   })
+
+
+  electron.ipcRenderer.send('getLanguages')
+
+  electron.ipcRenderer.on('getLanguages', (
+    event,
+    data
+  ) => {
+    // console.log("getLanguages", data)
+    languages = data
+    document.title = t("title") + " - " + t("appName")
+    processInput.setAttribute("placeholder", t("processName"))
+    priorityInput.setAttribute("placeholder", t("priority"))
+    intervalInput.setAttribute("placeholder", t("runningInterval"))
+    priorityTipInput.innerHTML = t("priorityList")
+    saveBtn.innerHTML = t("save")
+  })
+
+
+  const resources = {
+    'zh-CN': {
+      appName: "NyaNya Process Priority",
+      title: '配置',
+
+      processName: '进程名',
+      priority: '优先级',
+      priorityList: '实时-256, 高-128, 高于正常-32, 正常-16384, 低于正常-16384, 低-64',
+      runningInterval: '运行间隔 (ms)',
+
+      save: "保存",
+
+      savedSuccessfully: "保存成功",
+      processNameError: "进程名不能为空。",
+      intervalError: "时间间隔不能小于 1000 毫秒。",
+    },
+    'zh-TW': {
+      appName: "NyaNya Process Priority",
+      title: '配置',
+
+      processName: '進程名',
+      priority: '優先級',
+      priorityList: '實時-256, 高-128, 高於正常-32, 正常-16384, 低於正常-16384, 低-64',
+      runningInterval: '運行間隔 (ms)',
+
+      save: "保存",
+
+      savedSuccessfully: "保存成功",
+      processNameError: "進程名不能為空。",
+      intervalError: "時間間隔不能小於 1000 毫秒。",
+
+    },
+    'en-US': {
+      appName: "NyaNya Process Priority",
+      title: 'Configure',
+
+      process: 'Process',
+      priority: 'Priority',
+      priorityList: 'Realtime-256, High-128, AboveNormal-32, Normal-16384, BelowNormal-16384, Low-64',
+      runningInterval: 'Running interval (ms)',
+
+      save: "Save",
+
+      savedSuccessfully: "Saved successfully",
+      processNameError: "Process name cannot be blank.",
+      intervalError: "The interval cannot be less than 1000ms.",
+    },
+  }
+
+
+  const t = (parameter) => {
+    return resources[languages][parameter]
+  }
 </script>

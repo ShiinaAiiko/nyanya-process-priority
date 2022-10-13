@@ -16,51 +16,64 @@ import {
 	logo,
 	systemConfig,
 	taskIcon,
-	taskWhiteIcon,
 	processName,
 	priority,
 	interval,
 	msg,
+	languages,
+	setLanguages,
 } from './config'
 
-import { isStart, time, lastTime, start, end } from './modules/methods'
+import {
+	isStart,
+	time,
+	lastTime,
+	start,
+	end,
+	filterPriorityText,
+} from './modules/methods'
+import { t } from './modules/languages'
+import { exec } from 'child_process'
+
+import { version } from './package.json'
 
 export let appTray: Tray
 
 export const getMenu = () => {
 	const contextMenu = Menu.buildFromTemplate([
 		{
-			label: 'Configure',
+			label: t('configure'),
 			click() {
 				openMainWindows()
 			},
 		},
 		{
-			label: 'Process => ' + processName.split('/').join(", "),
+			label: t('processName') + ' => ' + processName.split('/').join(', '),
 			enabled: false,
 		},
 		{
-			label: 'Priority => ' + priority,
+			label:
+				t('priority') + ' => ' + filterPriorityText(priority) + '/' + priority,
 			enabled: false,
 		},
 		{
-			label: 'Interval => ' + interval + 'ms',
+			label: t('interval') + ' => ' + interval + 'ms',
 			enabled: false,
 		},
 		{
-			label: 'Times => ' + time,
+			label: t('timers') + ' => ' + time,
 			enabled: false,
 		},
 		{
-      label: 'Last run time => ' + lastTime,
+			label: t('lastRunTime') + ' => ' + lastTime,
 			enabled: false,
 		},
 		{
-			label: 'status => ' + msg,
+			label: t('status') + ' => ' + msg,
 			enabled: false,
 		},
 		{
-			label: 'Start',
+			label: t('start'),
 			checked: isStart,
 			type: 'radio',
 			click() {
@@ -69,7 +82,7 @@ export const getMenu = () => {
 			},
 		},
 		{
-			label: 'Close',
+			label: t('close'),
 			checked: !isStart,
 			type: 'radio',
 			click() {
@@ -78,7 +91,51 @@ export const getMenu = () => {
 			},
 		},
 		{
-			label: 'Quit',
+			label: t('languages'),
+			submenu: [
+				{
+					label: t('enUS'),
+					checked: languages === 'en-US',
+					type: 'radio',
+					click() {
+						setLanguages('en-US')
+					},
+				},
+				{
+					label: t('zhCN'),
+					checked: languages === 'zh-CN',
+					type: 'radio',
+					click() {
+						setLanguages('zh-CN')
+					},
+				},
+				{
+					label: t('zhTW'),
+					checked: languages === 'zh-TW',
+					type: 'radio',
+					click() {
+						setLanguages('zh-TW')
+					},
+				},
+			],
+		},
+		{
+			label: t('about'),
+			submenu: [
+				{
+					label: t('version') + ': ' + version,
+					enabled: false,
+				},
+				{
+					label: t('github'),
+					click() {
+						exec('start https://github.com/ShiinaAiiko/nyanya-process-priority')
+					},
+				},
+			],
+		},
+		{
+			label: t('quit'),
 			click() {
 				//ipc.send('close-main-window');
 				app.quit()
@@ -103,7 +160,7 @@ export const createTaskMenu = async (type?: 'pink' | 'white') => {
 	}
 	await systemConfig.set('taskMenuIconType', type)
 
-	let icon = type === 'pink' ? taskIcon : taskWhiteIcon
+	let icon = type === 'pink' ? taskIcon : taskIcon
 	appTray = new Tray(icon)
 	// console.log(appTray)
 	// console.log(iconDir)

@@ -22,11 +22,10 @@ import {
 	initProcessConfig,
 } from './config'
 
-
 import { initAppearance } from './appearance'
 import { createTaskMenu } from './taskMenu'
 import { initRouter } from './router/router'
-import { backup, start } from './modules/methods'
+import { start } from './modules/methods'
 import { openMainWindows } from './windows'
 import * as nyanyalog from 'nyanyajs-log'
 const run = () => {
@@ -63,7 +62,7 @@ const run = () => {
 		initProcessConfig()
 		await createTaskMenu()
 
-    start()
+		start()
 
 		// exec(cmd, (err, stdout, stderr) => {
 		// 	if (err) {

@@ -2,7 +2,19 @@
 name="meow-sticky-note-client"
 port=16111
 DIR=$(cd $(dirname $0) && pwd)
-allowMethods=("build saki-ui")
+version="1.0.1"
+
+allowMethods=("push delete build saki-ui")
+
+push() {
+  git tag v$version
+  git push origin v$version
+}
+
+delete() {
+  git tag -d v$version
+  git push origin :refs/tags/v$version
+}
 
 build() {
   saki-ui
