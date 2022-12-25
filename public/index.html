@@ -177,7 +177,7 @@
       appName: "NyaNya Process Priority",
       title: 'Configure',
 
-      process: 'Process',
+      processName: 'Process',
       priority: 'Priority',
       priorityList: 'Realtime-256, High-128, AboveNormal-32, Normal-16384, BelowNormal-16384, Low-64',
       runningInterval: 'Running interval (ms)',
@@ -192,6 +192,6 @@
 
 
   const t = (parameter) => {
-    return resources[languages][parameter]
+    return resources[languages][parameter] || parameter
   }
 </script>
