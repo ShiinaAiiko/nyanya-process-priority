@@ -11,7 +11,7 @@ import {
 } from 'electron'
 import path from 'path'
 import fs from 'fs'
-import * as nyanyalog from 'nyanyajs-log'
+// import * as nyanyalog from 'nyanyajs-log'
 
 import {
 	logo,

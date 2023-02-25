@@ -20,7 +20,7 @@ import {
 	updateProcessConfig,
 	languages,
 } from '../config'
-import * as nyanyalog from 'nyanyajs-log'
+// import * as nyanyalog from 'nyanyajs-log'
 
 export const R = (
 	func: (options: {

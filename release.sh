@@ -2,7 +2,7 @@
 name="nyanya-process-priority"
 port=16111
 DIR=$(cd $(dirname $0) && pwd)
-version="1.0.1"
+version="1.0.2"
 
 allowMethods=("push delete build saki-ui")
 
@@ -19,12 +19,22 @@ delete() {
 build() {
   saki-ui
   yarn el:icon
+  
+  mkdir -p ./el-build/packages
+  cp -r ./el-build/*.AppImage ./el-build/packages/
+  cp -r ./el-build/*.deb ./el-build/packages/
+  cp -r ./el-build/*.exe ./el-build/packages/
+
   rm -rf ./el-build/linux-unpacked
   rm -rf ./el-build/*.AppImage
+  rm -rf ./el-build/*.deb
+  rm -rf ./el-build/*.exe
 
   yarn el:build-win-x64
+
   mv "./el-build/Nyanya Process Priority Setup "$version".exe" \
   ./el-build/$name-setup-v$version-x64.exe
+  rm -rf ./el-build/*.exe.blockmap
 }
 
 saki-ui() {
